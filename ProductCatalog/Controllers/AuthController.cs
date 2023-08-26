@@ -30,7 +30,6 @@ namespace ProductCatalog.Controllers
             return Ok(_userRepositroy.GetName());
         }
 
-
         [HttpPost("Register")]
         public ActionResult Register(UserDto userDto)
         { 

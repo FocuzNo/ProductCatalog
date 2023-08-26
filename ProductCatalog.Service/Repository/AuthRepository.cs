@@ -7,9 +7,6 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
-using System.Data;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace ProductCatalog.Service.Repository
 {
@@ -25,7 +22,6 @@ namespace ProductCatalog.Service.Repository
             _dataContext = dataContext;
             _configuration = configuration;
         }
-
 
         public void RegisterAccount(UserDto userDto)
         {
