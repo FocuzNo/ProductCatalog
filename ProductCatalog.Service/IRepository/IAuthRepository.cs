@@ -6,6 +6,6 @@ namespace ProductCatalog.Service.IRepository
     {
         void RegisterAccount(UserDto userDto);
         string GenerateToken(User user);
-        //RefreshToken GenerateRefreshToken();
+        RefreshToken GenerateRefreshToken();
     }
 }

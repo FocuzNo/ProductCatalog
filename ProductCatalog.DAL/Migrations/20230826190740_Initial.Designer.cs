@@ -11,7 +11,7 @@ using ProductCatalog.DAL;
 namespace ProductCatalog.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230826101524_Initial")]
+    [Migration("20230826190740_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -81,6 +81,20 @@ namespace ProductCatalog.DAL.Migrations
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("TokenCreated")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("TokenExpires")
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Username");
 

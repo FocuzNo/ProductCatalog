@@ -6,6 +6,10 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography;
+using System.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ProductCatalog.Service.Repository
 {
@@ -22,13 +26,14 @@ namespace ProductCatalog.Service.Repository
             _configuration = configuration;
         }
 
+
         public void RegisterAccount(UserDto userDto)
         {
             string passworHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
 
             user.Username = userDto.Username;
             user.PasswordHash = passworHash;
-
+            user.Role = userDto.Role;
             _dataContext.Add(user);
             _dataContext.SaveChanges();
         }
@@ -38,6 +43,8 @@ namespace ProductCatalog.Service.Repository
             List<Claim> claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Name, user.Username!),
+                new Claim(ClaimTypes.Role, user.Role),
+
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
@@ -56,9 +63,15 @@ namespace ProductCatalog.Service.Repository
             return jwtToken;
         }
 
-        //public RefreshToken GenerateRefreshToken()
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public RefreshToken GenerateRefreshToken()
+        {
+            var refreshToken = new RefreshToken
+            {
+                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                Expires = DateTime.Now.AddDays(3)
+            };
+
+            return refreshToken;
+        }
     }
 }

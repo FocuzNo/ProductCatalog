@@ -79,6 +79,20 @@ namespace ProductCatalog.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("TokenCreated")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("TokenExpires")
+                        .HasColumnType("datetime(6)");
+
                     b.HasKey("Username");
 
                     b.ToTable("Users");
