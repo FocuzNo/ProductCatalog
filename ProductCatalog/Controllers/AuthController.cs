@@ -113,7 +113,7 @@ namespace ProductCatalog.Controllers
         {
             var userName = User?.Identity?.Name;
             var userName2 = User?.FindFirstValue(ClaimTypes.Name);
-            var role = User.FindFirstValue(ClaimTypes.Role);
+            var role = User?.FindFirstValue(ClaimTypes.Role);
             return Ok(new { userName, userName2, role });
         }
     }
