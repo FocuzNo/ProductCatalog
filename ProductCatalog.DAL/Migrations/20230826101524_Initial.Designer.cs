@@ -11,8 +11,8 @@ using ProductCatalog.DAL;
 namespace ProductCatalog.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230826085128_initial")]
-    partial class initial
+    [Migration("20230826101524_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -71,6 +71,20 @@ namespace ProductCatalog.DAL.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("ProductCatalog.DAL.Entities.User", b =>
+                {
+                    b.Property<string>("Username")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Username");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("ProductCatalog.DAL.Entities.Product", b =>

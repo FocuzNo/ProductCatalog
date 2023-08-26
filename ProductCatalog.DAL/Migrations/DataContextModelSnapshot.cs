@@ -70,6 +70,20 @@ namespace ProductCatalog.DAL.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("ProductCatalog.DAL.Entities.User", b =>
+                {
+                    b.Property<string>("Username")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Username");
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("ProductCatalog.DAL.Entities.Product", b =>
                 {
                     b.HasOne("ProductCatalog.DAL.Entities.Category", "Category")

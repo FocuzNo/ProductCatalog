@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using ProductCatalog.DAL.Entities;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace ProductCatalog.DAL
 {
@@ -9,6 +7,7 @@ namespace ProductCatalog.DAL
     {
         public DbSet<Product> Products { get; set; } = null!;
         public DbSet<Category> Categories { get; set; } = null!;
+        public DbSet<User> Users { get; set; } = null!;
 
         public DataContext(DbContextOptions<DataContext> options)
            : base(options)
@@ -21,6 +20,8 @@ namespace ProductCatalog.DAL
             .HasMany(p => p.Products)
             .WithOne(p => p.Category).IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<User>().HasKey(p => p.Username);
         }
     }
 }
