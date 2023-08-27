@@ -1,13 +1,12 @@
-﻿namespace ProductCatalog.DAL.Entities
+﻿using System.Text.Json.Serialization;
+
+namespace ProductCatalog.DAL.Entities
 {
     public class Category
     {
         public int Id { get; set; }
         public string CategoryName { get; set; } = string.Empty;
-        public ICollection<Product> Products { get; set; }
-        public Category()
-        {
-            Products = new List<Product>();
-        }
+        [JsonIgnore]
+        public List<Product> Products { get; set; } = new List<Product>();
     }
 }
