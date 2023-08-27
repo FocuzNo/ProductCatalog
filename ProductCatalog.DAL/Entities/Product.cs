@@ -1,4 +1,6 @@
-﻿namespace ProductCatalog.DAL.Entities
+﻿using System.Text.Json.Serialization;
+
+namespace ProductCatalog.DAL.Entities
 {
     public class Product
     {
@@ -9,6 +11,7 @@
         public decimal Price { get; set; }
         public string GeneralNote { get; set; } = string.Empty;
         public int? CategoryId { get; set; }
+        [JsonIgnore]
         public Category? Category { get; set; }
     }
 }

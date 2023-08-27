@@ -13,7 +13,6 @@ namespace ProductCatalog.Controllers
     {
         private readonly DataContext _dataContext;
         private readonly IAuthRepository _authRepository;
-        private readonly IUserRepository _userRepositroy;
 
         private readonly static User user = new();
 
@@ -21,13 +20,7 @@ namespace ProductCatalog.Controllers
         {
             _dataContext = dataContext;
             _authRepository = authRepository;
-            _userRepositroy = userRepository;
-        }
 
-        [HttpGet("GetName"), Authorize]
-        public ActionResult<string> GetName()
-        {
-            return Ok(_userRepositroy.GetName());
         }
 
         [HttpPost("Register")]
@@ -52,8 +45,12 @@ namespace ProductCatalog.Controllers
         {
             User? user =
                  _dataContext.Users.FirstOrDefault(u => u.Username == userDto.Username);
+            if(user?.Blocked is true)
+            {
+                return BadRequest("You are blocked.");
 
-            if (user == null)
+            }
+            if (user is null)
             {
                 return BadRequest("Wrong username.");
             }

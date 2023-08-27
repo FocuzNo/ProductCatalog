@@ -75,6 +75,12 @@ namespace ProductCatalog.DAL.Migrations
                     b.Property<string>("Username")
                         .HasColumnType("varchar(255)");
 
+                    b.Property<bool>("Blocked")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("longtext");

@@ -11,7 +11,7 @@ using ProductCatalog.DAL;
 namespace ProductCatalog.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230826190740_Initial")]
+    [Migration("20230827135528_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -77,6 +77,12 @@ namespace ProductCatalog.DAL.Migrations
                 {
                     b.Property<string>("Username")
                         .HasColumnType("varchar(255)");
+
+                    b.Property<bool>("Blocked")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
