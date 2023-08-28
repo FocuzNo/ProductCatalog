@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ProductCatalog.DAL;
 using ProductCatalog.DAL.Entities;
 using ProductCatalog.Service.IRepository;
 
@@ -49,7 +50,7 @@ namespace ProductCatalog.Controllers
             return Ok(newPassword);
         }
 
-        [HttpPost("BlockedUser")]
+        [HttpPost("BlockedUser"), Authorize(Roles = "Admin")]
         public async Task<ActionResult> Blocked(int? id)
         {
             await _userRepository.BlockedUser(id);

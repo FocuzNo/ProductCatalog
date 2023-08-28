@@ -20,11 +20,10 @@ namespace ProductCatalog.Controllers
         {
             _dataContext = dataContext;
             _authRepository = authRepository;
-
         }
 
         [HttpPost("Register")]
-        public ActionResult Register(UserDto userDto)
+        public async Task <ActionResult> Register(UserDto userDto)
         { 
             var users = _dataContext.Users.ToList();
             foreach (User user in users)
@@ -36,7 +35,7 @@ namespace ProductCatalog.Controllers
                 }
             }
 
-            _authRepository.RegisterAccount(userDto);
+            await _authRepository.RegisterAccount(userDto);
             return Ok(userDto);
         }
 

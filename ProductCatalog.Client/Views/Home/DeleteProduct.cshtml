@@ -1,0 +1,33 @@
+﻿@model ProductCatalog.DAL.Entities.Product
+
+@{
+    ViewData["Title"] = "DeleteProduct";
+}
+<form asp-action="DeleteProduct">
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SpecialNote)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GeneralNote)
+            </th>
+        </tr>
+    </thead>
+    </table>
+        <input type="submit" value="Delete" />
+        <a asp-action="Index">Back to List</a>
+    </form>

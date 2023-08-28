@@ -3,6 +3,8 @@ using ProductCatalog.DAL.Entities;
 using ProductCatalog.DAL;
 using ProductCatalog.Service.IRepository;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Builder.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProductCatalog.Service.Repository
 {

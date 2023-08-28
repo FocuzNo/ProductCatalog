@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalog", "ProductCatalog\ProductCatalog.csproj", "{8FA48B0A-4A51-491F-905B-EA6F7CF1BA26}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog", "ProductCatalog\ProductCatalog.csproj", "{8FA48B0A-4A51-491F-905B-EA6F7CF1BA26}"
 	ProjectSection(ProjectDependencies) = postProject
 		{984B329F-2999-460F-85B0-AEBA279D680E} = {984B329F-2999-460F-85B0-AEBA279D680E}
 		{9BCCB017-9E80-4633-85EA-BA5C711A9BF6} = {9BCCB017-9E80-4633-85EA-BA5C711A9BF6}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalog.DAL", "ProductCatalog.DAL\ProductCatalog.DAL.csproj", "{9BCCB017-9E80-4633-85EA-BA5C711A9BF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.DAL", "ProductCatalog.DAL\ProductCatalog.DAL.csproj", "{9BCCB017-9E80-4633-85EA-BA5C711A9BF6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalog.Service", "ProductCatalog.Service\ProductCatalog.Service.csproj", "{984B329F-2999-460F-85B0-AEBA279D680E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.Service", "ProductCatalog.Service\ProductCatalog.Service.csproj", "{984B329F-2999-460F-85B0-AEBA279D680E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalog.Client", "ProductCatalog.Client\ProductCatalog.Client.csproj", "{E0F2FB33-1D89-4C84-BB38-FBAB1C596088}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +33,10 @@ Global
 		{984B329F-2999-460F-85B0-AEBA279D680E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{984B329F-2999-460F-85B0-AEBA279D680E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{984B329F-2999-460F-85B0-AEBA279D680E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0F2FB33-1D89-4C84-BB38-FBAB1C596088}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0F2FB33-1D89-4C84-BB38-FBAB1C596088}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0F2FB33-1D89-4C84-BB38-FBAB1C596088}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0F2FB33-1D89-4C84-BB38-FBAB1C596088}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

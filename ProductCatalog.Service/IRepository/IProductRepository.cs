@@ -7,5 +7,7 @@ namespace ProductCatalog.Service.IRepository
         Task AddProduct(Product product);
         Task EditProduct(Product product);
         Task DeleteProduct(int? id);
+        Task <List<Product>> GetProducts();
+        Task<Product?> GetProductById(int? id);
     }
 }
