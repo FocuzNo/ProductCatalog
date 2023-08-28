@@ -1,0 +1,20 @@
+﻿@model ProductCatalog.DAL.Entities.UserDto
+
+@{
+    ViewData["Title"] = "Authentication";
+}
+
+<h2>Аутентификация</h2>
+<form asp-action="Login" asp-controller="Home">
+    <p>
+        <label asp-for="Username">Имя</label><br />
+        <input type="text" asp-for="Username" />
+    </p>
+    <p>
+        <label asp-for="Password">Пароль</label><br />
+        <input type="password" asp-for="Password" />
+    </p>
+    <p>
+        <input type="submit" value="Отправить" />
+    </p>
+</form>

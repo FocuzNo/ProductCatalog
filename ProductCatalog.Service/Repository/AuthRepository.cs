@@ -23,14 +23,14 @@ namespace ProductCatalog.Service.Repository
             _configuration = configuration;
         }
 
-        public void RegisterAccount(UserDto userDto)
+        public async Task RegisterAccount(UserDto userDto)
         {
             string passworHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
 
             user.Username = userDto.Username;
             user.PasswordHash = passworHash;
             user.Role = userDto.Role;
-            _dataContext.Add(user);
+            await _dataContext.AddAsync(user);
             _dataContext.SaveChanges();
         }
 

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ProductCatalog.DAL;
 using ProductCatalog.DAL.Entities;
 using ProductCatalog.Service.IRepository;
 
@@ -10,14 +12,16 @@ namespace ProductCatalog.Controllers
     public class ProductController : Controller
     {
         private readonly IProductRepository _productRepository;
+        private readonly DataContext _dataContext;
 
-        public ProductController(IProductRepository productRepository)
+        public ProductController(DataContext dataContext, IProductRepository productRepository)
         {
             _productRepository = productRepository;
+            _dataContext = dataContext;
         }
 
         [HttpPost("AddProducts"), Authorize(Roles = "SuperUser, User")]
-        public async Task<ActionResult> AddCategory(Product newProduct)
+        public async Task<ActionResult> AddProduct(Product newProduct)
         {
             await _productRepository.AddProduct(newProduct);
             return Ok(newProduct);
@@ -30,11 +34,25 @@ namespace ProductCatalog.Controllers
             return Ok(product);
         }
 
-        [HttpDelete("DeleteProducts"), Authorize(Roles = "SuperUser")]
+        [HttpDelete("DeleteProducts/{id}"), Authorize(Roles = "SuperUser")]
         public async Task<ActionResult> DeleteProduct(int? id)
         {
             await _productRepository.DeleteProduct(id);
             return Ok();
+        }
+
+        [HttpGet("GetProducts"), Authorize(Roles = "SuperUser")]
+        public async Task <ActionResult> GetProducts()
+        {
+            var product = await _dataContext.Products.ToListAsync();
+            return Ok(product);
+        }
+
+        [HttpGet("GetProductById/{id}"), Authorize(Roles = "SuperUser")]
+        public async Task <ActionResult> GetProductById(int id)
+        {
+            var product = await _productRepository.GetProductById(id);
+            return Ok(product);
         }
     }
 }

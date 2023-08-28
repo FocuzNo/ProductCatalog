@@ -36,8 +36,11 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
 });
 
 var connection = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<DataContext>(options => options.UseMySql(connection, 
-    ServerVersion.AutoDetect(connection)));
+builder.Services.AddDbContext<DataContext>(options => {
+    options.UseMySql(connection,
+    ServerVersion.AutoDetect(connection));
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+});
 
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -51,6 +54,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 

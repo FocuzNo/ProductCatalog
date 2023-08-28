@@ -11,7 +11,7 @@ using ProductCatalog.DAL;
 namespace ProductCatalog.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230827135528_Initial")]
+    [Migration("20230828112036_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
