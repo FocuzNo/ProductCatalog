@@ -26,8 +26,7 @@ namespace ProductCatalog.Client.Controllers
             var product = await GetProducts();
             if (product is null)
             {
-                //return (IActionResult)Results.Content("Access is available");
-
+                return (IActionResult)Results.Content("Access is available");
             }
 
             return View(product);
@@ -46,13 +45,6 @@ namespace ProductCatalog.Client.Controllers
             var url = "api/Product/GetProducts";
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-            var role = User?.FindFirstValue(accessToken);
-
-            if(role == null)
-            {
-                 url = "api/Product/GetProductsUser";
-
-            }
             string jsonStr = await _httpClient.GetStringAsync(url);
             var res = JsonConvert.DeserializeObject<List<Product>>(jsonStr)!.ToList();
 

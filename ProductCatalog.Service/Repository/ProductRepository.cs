@@ -2,8 +2,6 @@
 using ProductCatalog.DAL;
 using ProductCatalog.Service.IRepository;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ProductCatalog.Service.Repository
 {
