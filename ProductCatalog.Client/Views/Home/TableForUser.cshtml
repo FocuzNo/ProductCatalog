@@ -1,0 +1,64 @@
+﻿@model IEnumerable<ProductCatalog.DAL.Entities.Product>
+
+@{
+    ViewData["Title"] = "Table";
+}
+
+<a asp-action="CreateProductsForUser">Create Products</a>
+
+<table class="table">
+    <thead>
+        <tr>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CategoryId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GeneralNote)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var model = new ProductCatalog.DAL.Entities.Category();
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(i => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(i => item.ProductName)
+                </td>
+                <td>
+                    @Html.DisplayFor(i => item.CategoryId)
+                </td>
+                <td>
+                    @Html.DisplayFor(i => item.ProductDescription)
+                </td>
+                <td>
+                    @Html.DisplayFor(i => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(i => item.GeneralNote)
+                </td>
+                <td>
+                    @Html.ActionLink("EditProductForUser", "EditProductForUser", new {id=item.Id})
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

@@ -57,6 +57,21 @@ namespace ProductCatalog.Service.Repository
             return product;
         }
 
+        public async Task<List<Product>> GetProductWithoutSpecial()
+        {
+            var product = await _dataContext.Products.Select(p => new Product
+            {
+                Id = p.Id,
+                ProductName = p.ProductName,
+                ProductDescription = p.ProductDescription,
+                Price = p.Price,
+                GeneralNote = p.GeneralNote,
+                CategoryId = p.CategoryId
+            }).ToListAsync();
+
+            return product;
+        }
+
         public async Task<IEnumerable<Product>> SearchByProduct(string? searchBy, string? name)
         {
            

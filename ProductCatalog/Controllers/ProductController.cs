@@ -40,7 +40,7 @@ namespace ProductCatalog.Controllers
             return Ok();
         }
 
-        [HttpGet("GetProducts"), Authorize(Roles = "SuperUser, User")]
+        [HttpGet("GetProducts"), Authorize(Roles = "SuperUser")]
         public async Task <ActionResult> GetProducts()
         {
             var product = await _dataContext.Products.ToListAsync();
@@ -51,6 +51,13 @@ namespace ProductCatalog.Controllers
         public async Task <ActionResult> GetProductById(int id)
         {
             var product = await _productRepository.GetProductById(id);
+            return Ok(product);
+        }
+
+        [HttpGet("GetProductWithoutSpecial"), Authorize(Roles = "User")]
+        public async Task <ActionResult> GetProductWithoutSpecial()
+        {
+            var product = await _productRepository.GetProductWithoutSpecial();
             return Ok(product);
         }
 

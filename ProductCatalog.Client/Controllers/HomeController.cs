@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 using ProductCatalog.DAL.Entities;
 using System.Net.Http.Headers;
@@ -35,16 +37,16 @@ namespace ProductCatalog.Client.Controllers
         [HttpGet]
         public async Task<List<Product>> GetProducts()
         {
+            
             var accessToken = HttpContext.Session.GetString("JWT");
             if(accessToken == null)
             {
                 return (List<Product>)Results.Content("Access is available");
-
             }
 
             var url = "api/Product/GetProducts";
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
+            
             string jsonStr = await _httpClient.GetStringAsync(url);
             var res = JsonConvert.DeserializeObject<List<Product>>(jsonStr)!.ToList();
 
@@ -529,6 +531,141 @@ namespace ProductCatalog.Client.Controllers
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction(nameof(Panel));
+            }
+            return View();
+        }
+
+
+        public async Task<IActionResult> TableForUser()
+        {
+            var product = await GetProductWithoutSpecial();
+            if (product is null)
+            {
+                return (IActionResult)Results.Content("Access is available");
+            }
+
+            return View(product);
+        }
+
+        [HttpGet]
+        public async Task<List<Product>> GetProductWithoutSpecial()
+        {
+
+            var accessToken = HttpContext.Session.GetString("JWT");
+            if (accessToken == null)
+            {
+                return (List<Product>)Results.Content("Access is available");
+            }
+
+            var url = "api/Product/GetProductWithoutSpecial";
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+            string jsonStr = await _httpClient.GetStringAsync(url);
+            var res = JsonConvert.DeserializeObject<List<Product>>(jsonStr)!.ToList();
+
+            return res;
+        }
+
+        [HttpGet]
+        public IActionResult LoginForUser()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> LoginForUser(UserDto user)
+        {
+            StringContent stringContent = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+
+            using (var response = await _httpClient.PostAsync("api/Auth/Login", stringContent))
+            {
+                string token = await response.Content.ReadAsStringAsync();
+
+                if (token == "Wrong token")
+                {
+                    ViewBag.Message = "Incorrect UserId or Password";
+                    return Redirect("~/Home/LoginForUser");
+                }
+                HttpContext.Session.SetString("JWT", token);
+            }
+
+
+            return Redirect("~/Home/TableForUser");
+        }
+
+        public IActionResult CreateProductsForUser()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateProductsForUser(Product product)
+        {
+            var accessToken = HttpContext.Session.GetString("JWT");
+            if (accessToken == null)
+            {
+                return (IActionResult)Results.Content("Access is available");
+
+            }
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+            string data = JsonConvert.SerializeObject(product);
+            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+            HttpResponseMessage responseMessage = _httpClient.PostAsync(_httpClient.BaseAddress + "/Product/AddProducts", content).Result;
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(TableForUser));
+            }
+            return View();
+
+        }
+
+        [HttpGet]
+        public IActionResult EditProductForUser(int id)
+        {
+            try
+            {
+                var accessToken = HttpContext.Session.GetString("JWT");
+                if (accessToken == null)
+                {
+                    return (IActionResult)Results.Content("Access is available");
+
+                }
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                Product product = new Product();
+                HttpResponseMessage responseMessage = _httpClient.GetAsync(_httpClient.BaseAddress + "/Product/GetProductById/" + id).Result;
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    string data = responseMessage.Content.ReadAsStringAsync().Result;
+                    product = JsonConvert.DeserializeObject<Product>(data)!;
+                }
+                return View(product);
+
+            }
+            catch (Exception ex)
+            {
+                TempData[""] = ex.Message;
+                return View();
+            }
+
+        }
+
+        [HttpPost]
+        public IActionResult EditProductForUser(Product product)
+        {
+            var accessToken = HttpContext.Session.GetString("JWT");
+            if (accessToken == null)
+            {
+                return (IActionResult)Results.Content("Access is available");
+
+            }
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            string data = JsonConvert.SerializeObject(product);
+            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+            HttpResponseMessage httpResponseMessage = _httpClient.PutAsync(_httpClient.BaseAddress + "/Product/EditProducts", content).Result;
+
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(TableForUser));
             }
             return View();
         }
