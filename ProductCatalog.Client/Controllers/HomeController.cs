@@ -17,6 +17,7 @@ namespace ProductCatalog.Client.Controllers
             _httpClient.BaseAddress = baseAddress;
         }
 
+        #region
         public async Task<IActionResult> Index()
         {
             var product = await GetProducts();
@@ -41,7 +42,7 @@ namespace ProductCatalog.Client.Controllers
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             string jsonStr = await _httpClient.GetStringAsync(url);
 
-            var res = JsonConvert.DeserializeObject<List<Product>>(jsonStr).ToList();
+            var res = JsonConvert.DeserializeObject<List<Product>>(jsonStr)!.ToList();
 
             return res;
         }
@@ -99,6 +100,8 @@ namespace ProductCatalog.Client.Controllers
             return Redirect("~/Home/Login");
         }
 
+        #endregion
+
         [HttpGet]
         public IActionResult CreateProducts()
         {
@@ -106,8 +109,7 @@ namespace ProductCatalog.Client.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProducts([Bind("Id, ProductName, ProductDescription, SpecialNote, Price, GeneralNote, CategoryId")] 
-        Product product)
+        public IActionResult CreateProducts(Product product)
         {
             var accessToken = HttpContext.Session.GetString("JWT");
             if (accessToken == null)
@@ -115,13 +117,17 @@ namespace ProductCatalog.Client.Controllers
                 return (IActionResult)Results.Content("Access is available");
 
             }
-            var url = "api/Product/AddProducts";
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            
+            string data = JsonConvert.SerializeObject(product);
+            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+            HttpResponseMessage responseMessage = _httpClient.PostAsync(_httpClient.BaseAddress + "/Product/AddProducts", content).Result;
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
 
-            var stringContent = new StringContent(JsonConvert.SerializeObject(product), Encoding.UTF8, "application/json");
-            await _httpClient.PostAsync(url, stringContent);
-
-            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
@@ -141,7 +147,7 @@ namespace ProductCatalog.Client.Controllers
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     string data = responseMessage.Content.ReadAsStringAsync().Result;
-                    product = JsonConvert.DeserializeObject<Product>(data);
+                    product = JsonConvert.DeserializeObject<Product>(data)!;
                 }
                 return View(product);
 
@@ -191,7 +197,7 @@ namespace ProductCatalog.Client.Controllers
             if(responseMessage.IsSuccessStatusCode)
             {
                 string data = responseMessage.Content.ReadAsStringAsync().Result;
-                product = JsonConvert.DeserializeObject<Product>(data);
+                product = JsonConvert.DeserializeObject<Product>(data)!;
             }
             return View(product);
         }
@@ -210,6 +216,118 @@ namespace ProductCatalog.Client.Controllers
             HttpResponseMessage responseMessage = _httpClient.DeleteAsync(_httpClient.BaseAddress + "/Product/DeleteProducts/" + id).Result;
 
             if(responseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult CreateCategory()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateCategory(Category category)
+        {
+            var accessToken = HttpContext.Session.GetString("JWT");
+            if (accessToken == null)
+            {
+                return (IActionResult)Results.Content("Access is available");
+
+            }
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+            string data = JsonConvert.SerializeObject(category);
+            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+            HttpResponseMessage responseMessage = _httpClient.PostAsync(_httpClient.BaseAddress + "/Category/AddCategory", content).Result;
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult EditCategory(int id)
+        {
+            try
+            {
+                var accessToken = HttpContext.Session.GetString("JWT");
+                if (accessToken == null)
+                {
+                    return (IActionResult)Results.Content("Access is available");
+
+                }
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                Category category = new Category();
+                HttpResponseMessage responseMessage = _httpClient.GetAsync(_httpClient.BaseAddress + "/Product/GetCategoryById/" + id).Result;
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    string data = responseMessage.Content.ReadAsStringAsync().Result;
+                    category = JsonConvert.DeserializeObject<Category>(data)!;
+                }
+                return View(category);
+
+            }
+            catch (Exception ex)
+            {
+                TempData[""] = ex.Message;
+                return View();
+            }
+
+        }
+
+        [HttpPost]
+        public IActionResult EditCategory(Category category)
+        {
+            var accessToken = HttpContext.Session.GetString("JWT");
+            if (accessToken == null)
+            {
+                return (IActionResult)Results.Content("Access is available");
+
+            }
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            string data = JsonConvert.SerializeObject(category);
+            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+            HttpResponseMessage httpResponseMessage = _httpClient.PutAsync(_httpClient.BaseAddress + "/Category/EditCategory", content).Result;
+
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult DeleteCategory()
+        {
+            var accessToken = HttpContext.Session.GetString("JWT");
+            if (accessToken == null)
+            {
+                return (IActionResult)Results.Content("Access is available");
+
+            }
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            return View();
+        }
+
+        [HttpPost, ActionName("DeleteCategory")]
+        public IActionResult DeleteConfirmedCategory(int id)
+        {
+            var accessToken = HttpContext.Session.GetString("JWT");
+            if (accessToken == null)
+            {
+                return (IActionResult)Results.Content("Access is available");
+
+            }
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+            HttpResponseMessage responseMessage = _httpClient.DeleteAsync(_httpClient.BaseAddress + "/Category/DeleteCategory/" + id).Result;
+
+            if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction(nameof(Index));
             }

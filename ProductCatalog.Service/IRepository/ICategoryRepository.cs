@@ -7,5 +7,6 @@ namespace ProductCatalog.Service.IRepository
         Task AddCategory(Category category);
         Task EditCategory(Category category);
         Task DeleteCategory(int? id);
+        Task<Category?> GetCategoryById(int? id);
     }
 }

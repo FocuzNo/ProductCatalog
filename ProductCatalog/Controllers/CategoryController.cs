@@ -30,11 +30,18 @@ namespace ProductCatalog.Controllers
             return Ok(category);
         }
 
-        [HttpDelete("DeleteCategory"), Authorize(Roles = "SuperUser")]
+        [HttpDelete("DeleteCategory/{id}"), Authorize(Roles = "SuperUser")]
         public async Task<ActionResult> DeleteCategory(int? id)
         {
             await _categoryRepository.DeleteCategory(id);
             return Ok();
+        }
+
+        [HttpGet("GetCategoryById/{id}"), Authorize(Roles = "SuperUser")]
+        public async Task<ActionResult> GetProductById(int id)
+        {
+            var category = await _categoryRepository.GetCategoryById(id);
+            return Ok(category);
         }
     }
 }

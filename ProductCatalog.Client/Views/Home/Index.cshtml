@@ -4,16 +4,25 @@
     ViewData["Title"] = "Table";
 }
 
+<a asp-action="CreateProducts">Create Products</a>
+<a asp-action="CreateCategory">Create Category</a>
+<a asp-action="EditCategory">Edit Category</a>
+<a asp-action="DeleteCategory">Delete Category</a>
+
 <table class="table">
+
     <thead>
         <tr>
+
             <th>
                 @Html.DisplayNameFor(model => model.Id)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ProductName)
             </th>
-         
+            <th>
+                @Html.DisplayNameFor(model => model.CategoryId)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.ProductDescription)
             </th>
@@ -31,6 +40,8 @@
     <tbody>
         @foreach(var item in Model)
         {
+            var model = new ProductCatalog.DAL.Entities.Category();
+
             <tr>
                 <td>
                     @Html.DisplayFor(i => item.Id)
@@ -38,7 +49,9 @@
                 <td>
                     @Html.DisplayFor(i => item.ProductName)
                 </td>
-              
+                <td>
+                    @Html.DisplayFor(i => item.CategoryId)
+                </td>
                 <td>
                     @Html.DisplayFor(i => item.ProductDescription)
                 </td>
@@ -52,12 +65,11 @@
                     @Html.DisplayFor(i => item.GeneralNote)
                 </td>
                 <td>
-                    @Html.ActionLink("CreateProducts", "CreateProducts", new {id=item.Id})
                     @Html.ActionLink("EditProduct", "EditProduct", new {id=item.Id})
                     @Html.ActionLink("DeleteProduct", "DeleteProduct", new {id=item.Id})
-
                 </td>
             </tr>
         }
     </tbody>
 </table>
+

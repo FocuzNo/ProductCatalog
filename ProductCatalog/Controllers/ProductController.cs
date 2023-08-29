@@ -34,7 +34,7 @@ namespace ProductCatalog.Controllers
             return Ok(product);
         }
 
-        [HttpDelete("DeleteProducts/{id}"), Authorize(Roles = "SuperUser")]
+        [HttpDelete("DeleteProducts/{id}"), Authorize(Roles = "")]
         public async Task<ActionResult> DeleteProduct(int? id)
         {
             await _productRepository.DeleteProduct(id);
@@ -46,6 +46,22 @@ namespace ProductCatalog.Controllers
         {
             var product = await _dataContext.Products.ToListAsync();
             return Ok(product);
+
+            //var products = await _dataContext.Products.Join(_dataContext.Categories,
+            //p => p.CategoryId,
+            //c => c.Id,
+            //(p, c) => new
+            //{
+            //    ProductName = p.ProductName,
+            //    CategoryName = c.CategoryName,
+            //    ProductDescription = p.ProductDescription,
+            //    SpecialNote = p.SpecialNote,
+            //    Price = p.Price,
+            //    GeneralNote = p.GeneralNote,
+            //}).ToListAsync();
+
+
+            //return Ok(products);
         }
 
         [HttpGet("GetProductById/{id}"), Authorize(Roles = "SuperUser")]
