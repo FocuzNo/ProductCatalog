@@ -6,8 +6,10 @@ namespace ProductCatalog.Service.IRepository
     {
         string GetName();
         Task AddUser(User user);
-        Task DeleteUser(string? name);
+        Task DeleteUser(int? id);
         Task EditPassword(string? name, string? password);
         Task BlockedUser(int? id);
+        Task<List<User>> GetUsers();
+        Task<User?> GetUserById(int? id);
     }
 }

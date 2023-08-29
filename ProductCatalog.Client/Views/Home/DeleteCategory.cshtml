@@ -1,0 +1,13 @@
+﻿@model ProductCatalog.DAL.Entities.Category
+
+@{
+    ViewData["Title"] = "DeleteCategory";
+}
+<form asp-action="DeleteCategory">
+    <label asp-for="Id">Id</label>
+    <input asp-for="Id" />
+    <br />
+
+    <input type="submit" value="Delete" />
+    <a asp-action="Index">Back to List</a>
+</form>

@@ -49,13 +49,63 @@ namespace ProductCatalog.Service.Repository
         {
             var product = await _dataContext.Products.ToListAsync();
             return product;
-           
         }
 
         public async Task<Product?> GetProductById(int? id)
         {
             Product? product = await _dataContext.Products.FirstOrDefaultAsync(u => u.Id == id);
             return product;
+        }
+
+        public async Task<List<Product>> GetProductWithoutSpecial()
+        {
+            var product = await _dataContext.Products.Select(p => new Product
+            {
+                Id = p.Id,
+                ProductName = p.ProductName,
+                ProductDescription = p.ProductDescription,
+                Price = p.Price,
+                GeneralNote = p.GeneralNote,
+                CategoryId = p.CategoryId
+            }).ToListAsync();
+
+            return product;
+        }
+
+        public async Task<IEnumerable<Product>> SearchByProduct(string? searchBy, string? name)
+        {
+           
+            IQueryable<Product> searchByName = _dataContext.Products;
+            if (searchBy!.ToLower() == "id")
+            {
+                searchByName = _dataContext.Products.Where(p => p.Id == int.Parse(name!));
+            }
+            else if (searchBy!.ToLower() == "productname")
+            {
+                searchByName = _dataContext.Products.Where(p => p.ProductName.ToLower().Contains(name!.ToLower()));
+            }
+            else if (searchBy!.ToLower() == "categoryid")
+            {
+                searchByName = _dataContext.Products.Where(p => p.CategoryId == int.Parse(name!));
+            }
+            else if (searchBy!.ToLower() == "productdescription")
+            {
+                searchByName = _dataContext.Products.Where(p => p.ProductDescription.ToLower().Contains(name!.ToLower()));
+            }
+            else if (searchBy!.ToLower() == "specialnot")
+            {
+                searchByName = _dataContext.Products.Where(p => p.SpecialNote.ToLower().Contains(name!.ToLower()));
+            }
+            else if (searchBy!.ToLower() == "price")
+            {
+                searchByName = _dataContext.Products.Where(p => p.Price == decimal.Parse(name!));
+            }
+            else if (searchBy!.ToLower() == "generalnot")
+            {
+                searchByName = _dataContext.Products.Where(p => p.GeneralNote.ToLower().Contains(name!.ToLower()));
+            }
+
+            return await searchByName.ToListAsync();
         }
     }
 }

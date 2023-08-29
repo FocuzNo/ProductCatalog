@@ -3,7 +3,6 @@ using ProductCatalog.DAL.Entities;
 using ProductCatalog.DAL;
 using ProductCatalog.Service.IRepository;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Builder.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace ProductCatalog.Service.Repository
@@ -38,10 +37,10 @@ namespace ProductCatalog.Service.Repository
             await _dataContext.SaveChangesAsync();
         }
 
-        public async Task DeleteUser(string? name)
+        public async Task DeleteUser(int? id)
         {
-            User? user = _dataContext.Users.FirstOrDefault(x => x.Username == name);
-            _dataContext.Users.Remove(user);
+            User? user = _dataContext.Users.FirstOrDefault(x => x.Id == id);
+            _dataContext.Users.Remove(user!);
             await _dataContext.SaveChangesAsync();
         }
 
@@ -66,6 +65,18 @@ namespace ProductCatalog.Service.Repository
                 _dataContext.Users.Update(user);
                 await _dataContext.SaveChangesAsync();
             }
+        }
+
+        public async Task<List<User>> GetUsers()
+        {
+            var users = await _dataContext.Users.ToListAsync();
+            return users;
+        }
+
+        public async Task<User?> GetUserById(int? id)
+        {
+            User? user = await _dataContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+            return user;
         }
     }
 }

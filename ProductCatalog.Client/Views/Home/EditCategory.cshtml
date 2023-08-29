@@ -1,0 +1,14 @@
+﻿@model ProductCatalog.DAL.Entities.Category
+
+<h2>Редактирование категории</h2>
+<hr />
+<form asp-action="EditCategory">
+    <label asp-for="Id">Id</label>
+    <input asp-for="Id" />
+    <br />
+    <label asp-for="CategoryName">CategoryName</label>
+    <input asp-for="CategoryName" />
+
+    <input type="submit" value="Edit" />
+    <a asp-action="Index">Back to List</a>
+</form>

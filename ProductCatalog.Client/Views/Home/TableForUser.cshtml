@@ -4,23 +4,9 @@
     ViewData["Title"] = "Table";
 }
 
-<a asp-action="CreateProducts">Create Products</a>
-<a asp-action="CreateCategory">Create Category</a>
-<a asp-action="EditCategory">Edit Category</a>
-<a asp-action="DeleteCategory">Delete Category</a>
+<a asp-action="CreateProductsForUser">Create Products</a>
 
-
-<div>
-    <form asp-controller="Home" asp-action="Index" method="get">
-        <p>
-            Title: <input type="text" name="SearchString" />
-            <input type="submit" value="Filter" />
-        </p>
-    </form>
-    }
-</div>
 <table class="table">
-
     <thead>
         <tr>
 
@@ -37,9 +23,6 @@
                 @Html.DisplayNameFor(model => model.ProductDescription)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SpecialNote)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
             <th>
@@ -48,7 +31,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(var item in Model)
+        @foreach (var item in Model)
         {
             var model = new ProductCatalog.DAL.Entities.Category();
 
@@ -66,17 +49,13 @@
                     @Html.DisplayFor(i => item.ProductDescription)
                 </td>
                 <td>
-                    @Html.DisplayFor(i => item.SpecialNote)
-                </td>
-                <td>
                     @Html.DisplayFor(i => item.Price)
                 </td>
                 <td>
                     @Html.DisplayFor(i => item.GeneralNote)
                 </td>
                 <td>
-                    @Html.ActionLink("EditProduct", "EditProduct", new {id=item.Id})
-                    @Html.ActionLink("DeleteProduct", "DeleteProduct", new {id=item.Id})
+                    @Html.ActionLink("EditProductForUser", "EditProductForUser", new {id=item.Id})
                 </td>
             </tr>
         }

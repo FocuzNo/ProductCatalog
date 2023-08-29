@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ProductCatalog.DAL;
 using ProductCatalog.DAL.Entities;
 using ProductCatalog.Service.IRepository;
 
@@ -30,16 +29,11 @@ namespace ProductCatalog.Controllers
             return Ok(newUser);
         }
 
-        [HttpDelete("DeleteUser"), Authorize(Roles = "Admin")]
-        public async Task<ActionResult> DeleteUser(string? name)
+        [HttpDelete("DeleteUser/{id}"), Authorize(Roles = "Admin")]
+        public async Task<ActionResult> DeleteUser(int? id)
         {
-            if (name is null)
-            {
-                return BadRequest("No such user found. " +
-                    "Try again.");
-            }
 
-            await _userRepository.DeleteUser(name);
+            await _userRepository.DeleteUser(id);
             return Ok();
         }
 
@@ -50,11 +44,25 @@ namespace ProductCatalog.Controllers
             return Ok(newPassword);
         }
 
-        [HttpPost("BlockedUser"), Authorize(Roles = "Admin")]
+        [HttpPut("BlockedUser/{id}"), Authorize(Roles = "Admin")]
         public async Task<ActionResult> Blocked(int? id)
         {
             await _userRepository.BlockedUser(id);
             return Ok();
+        }
+
+        [HttpGet("GetUsers"), Authorize(Roles = "Admin")]
+        public async Task<ActionResult> GetProducts()
+        {
+            var product = await _userRepository.GetUsers();
+            return Ok(product);
+        }
+
+        [HttpGet("GetUserById/{id}"), Authorize(Roles = "Admin")]
+        public async Task<ActionResult> GetUserById(int id)
+        {
+            var user = await _userRepository.GetUserById(id);
+            return Ok(user);
         }
     }
 }

@@ -1,0 +1,39 @@
+﻿@model ProductCatalog.DAL.Entities.User
+
+@{
+    ViewData["Title"] = "DeletrUser";
+}
+<form asp-action="DeleteUser">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Username)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PasswordHash)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RefreshToken)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TokenCreated)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TokenExpires)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Blocked)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Role)
+                </th>
+            </tr>
+        </thead>
+    </table>
+    <input type="submit" value="Delete" />
+    <a asp-action="Panel">Back to List</a>
+</form>

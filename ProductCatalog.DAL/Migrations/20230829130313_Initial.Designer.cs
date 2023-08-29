@@ -11,7 +11,7 @@ using ProductCatalog.DAL;
 namespace ProductCatalog.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230828112036_Initial")]
+    [Migration("20230829130313_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -75,14 +75,12 @@ namespace ProductCatalog.DAL.Migrations
 
             modelBuilder.Entity("ProductCatalog.DAL.Entities.User", b =>
                 {
-                    b.Property<string>("Username")
-                        .HasColumnType("varchar(255)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
                     b.Property<bool>("Blocked")
                         .HasColumnType("tinyint(1)");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -102,7 +100,11 @@ namespace ProductCatalog.DAL.Migrations
                     b.Property<DateTime>("TokenExpires")
                         .HasColumnType("datetime(6)");
 
-                    b.HasKey("Username");
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Users");
                 });

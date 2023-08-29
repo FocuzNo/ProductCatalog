@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using ProductCatalog.DAL;
 using ProductCatalog.DAL.Entities;
 using ProductCatalog.Service.IRepository;
-
 namespace ProductCatalog.Controllers
 {
     [Route("api/[controller]")]
@@ -48,11 +47,25 @@ namespace ProductCatalog.Controllers
             return Ok(product);
         }
 
-        [HttpGet("GetProductById/{id}"), Authorize(Roles = "SuperUser")]
+        [HttpGet("GetProductById/{id}"), Authorize(Roles = "SuperUser, User")]
         public async Task <ActionResult> GetProductById(int id)
         {
             var product = await _productRepository.GetProductById(id);
             return Ok(product);
+        }
+
+        [HttpGet("GetProductWithoutSpecial"), Authorize(Roles = "User")]
+        public async Task <ActionResult> GetProductWithoutSpecial()
+        {
+            var product = await _productRepository.GetProductWithoutSpecial();
+            return Ok(product);
+        }
+
+        [HttpGet("SearchByProduct")]
+        public async Task<ActionResult> SearchByProduct(string? searchBy, string? name)
+        {
+           var productSearch = await _productRepository.SearchByProduct(searchBy, name);
+           return Ok(productSearch);
         }
     }
 }

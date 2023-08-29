@@ -1,0 +1,25 @@
+﻿@model ProductCatalog.DAL.Entities.Product
+
+<h2>Редактирование продукта</h2>
+<hr />
+<form asp-action="EditProductForUser">
+    <label asp-for="Id">Id</label>
+    <input asp-for="Id" />
+    <br />
+    <label asp-for="ProductName">ProductName</label>
+    <input asp-for="ProductName" />
+    <br />
+    <label asp-for="ProductDescription">ProductDescription</label>
+    <input asp-for="ProductDescription" />
+    <br />
+    <label asp-for="Price">Price</label>
+    <input asp-for="Price" />
+    <br />
+    <label asp-for="GeneralNote">GeneralNote</label>
+    <input asp-for="GeneralNote" />
+    <br />
+    <label asp-for="CategoryId">CategoryId</label>
+    <input asp-for="CategoryId" />
+    <input type="submit" value="Edit" />
+    <a asp-action="Index">Back to List</a>
+</form>

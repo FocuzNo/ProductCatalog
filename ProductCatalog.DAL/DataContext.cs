@@ -21,7 +21,7 @@ namespace ProductCatalog.DAL
             .WithOne(p => p.Category).IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<User>().HasKey(p => p.Username);
+            modelBuilder.Entity<User>().HasKey(p => p.Id);
         }
     }
 }
