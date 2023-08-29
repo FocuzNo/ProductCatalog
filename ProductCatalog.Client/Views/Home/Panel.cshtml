@@ -1,0 +1,80 @@
+﻿@model IEnumerable<ProductCatalog.DAL.Entities.User>
+
+@{
+    ViewData["Title"] = "Table";
+}
+
+<a asp-action="CreateUser">Create User</a>
+<a asp-action="BlockedUser">Blocked User</a>
+<a asp-action="EditPasswordUser">EditPasswordUser</a>
+
+
+<table class="table">
+
+    <thead>
+        <tr>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Username)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PasswordHash)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RefreshToken)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TokenCreated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TokenExpires)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Blocked)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Role)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var model = new ProductCatalog.DAL.Entities.Category();
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(i => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(i => item.Username)
+                </td>
+                <td>
+                    @Html.DisplayFor(i => item.PasswordHash)
+                </td>
+                <td>
+                    @Html.DisplayFor(i => item.RefreshToken)
+                </td>
+                <td>
+                    @Html.DisplayFor(i => item.TokenCreated)
+                </td>
+                <td>
+                    @Html.DisplayFor(i => item.TokenExpires)
+                </td>
+                <td>
+                    @Html.DisplayFor(i => item.Blocked)
+                </td>
+                <td>
+                    @Html.DisplayFor(i => item.Role)
+                </td>
+                <td>
+                    @Html.ActionLink("DeleteUser", "DeleteUser", new {id=item.Id})
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

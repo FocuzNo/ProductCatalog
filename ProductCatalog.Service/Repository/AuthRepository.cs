@@ -27,6 +27,7 @@ namespace ProductCatalog.Service.Repository
         {
             string passworHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
 
+            user.Id = userDto.Id;
             user.Username = userDto.Username;
             user.PasswordHash = passworHash;
             user.Role = userDto.Role;

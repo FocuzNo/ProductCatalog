@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using ProductCatalog.DAL;
 using ProductCatalog.DAL.Entities;
 using ProductCatalog.Service.IRepository;
-
 namespace ProductCatalog.Controllers
 {
     [Route("api/[controller]")]
@@ -34,7 +33,7 @@ namespace ProductCatalog.Controllers
             return Ok(product);
         }
 
-        [HttpDelete("DeleteProducts/{id}"), Authorize(Roles = "")]
+        [HttpDelete("DeleteProducts/{id}"), Authorize(Roles = "SuperUser")]
         public async Task<ActionResult> DeleteProduct(int? id)
         {
             await _productRepository.DeleteProduct(id);
@@ -46,29 +45,41 @@ namespace ProductCatalog.Controllers
         {
             var product = await _dataContext.Products.ToListAsync();
             return Ok(product);
-
-            //var products = await _dataContext.Products.Join(_dataContext.Categories,
-            //p => p.CategoryId,
-            //c => c.Id,
-            //(p, c) => new
-            //{
-            //    ProductName = p.ProductName,
-            //    CategoryName = c.CategoryName,
-            //    ProductDescription = p.ProductDescription,
-            //    SpecialNote = p.SpecialNote,
-            //    Price = p.Price,
-            //    GeneralNote = p.GeneralNote,
-            //}).ToListAsync();
-
-
-            //return Ok(products);
         }
 
-        [HttpGet("GetProductById/{id}"), Authorize(Roles = "SuperUser")]
+        [HttpGet("GetProductById/{id}"), Authorize(Roles = "SuperUser, User")]
         public async Task <ActionResult> GetProductById(int id)
         {
             var product = await _productRepository.GetProductById(id);
             return Ok(product);
+        }
+
+        [HttpGet("GetProductsUser"), Authorize(Roles = "User")]
+        public async Task<ActionResult> GetProductsUser()
+        {
+            var products = await _dataContext.Products.Join(_dataContext.Categories,
+            p => p.CategoryId,
+            c => c.Id,
+            (p, c) => new
+            {
+                ProductName = p.ProductName,
+                CategoryName = c.CategoryName,
+                ProductDescription = p.ProductDescription,
+                SpecialNote = p.SpecialNote,
+                Price = p.Price,
+                GeneralNote = p.GeneralNote,
+            }).ToListAsync();
+
+            return Ok(products);
+        }
+        
+
+
+        [HttpGet("SearchByProduct")]
+        public async Task<ActionResult> SearchByProduct(string? searchBy, string? name)
+        {
+           var productSearch = await _productRepository.SearchByProduct(searchBy, name);
+           return Ok(productSearch);
         }
     }
 }

@@ -9,5 +9,6 @@ namespace ProductCatalog.Service.IRepository
         Task DeleteProduct(int? id);
         Task <List<Product>> GetProducts();
         Task<Product?> GetProductById(int? id);
+        Task<IEnumerable<Product>> SearchByProduct(string? searchBy, string? name);
     }
 }

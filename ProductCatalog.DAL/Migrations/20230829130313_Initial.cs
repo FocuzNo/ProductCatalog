@@ -34,9 +34,10 @@ namespace ProductCatalog.DAL.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Username = table.Column<string>(type: "varchar(255)", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Username = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Id = table.Column<int>(type: "int", nullable: false),
                     PasswordHash = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     RefreshToken = table.Column<string>(type: "longtext", nullable: false)
@@ -49,7 +50,7 @@ namespace ProductCatalog.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Username);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 

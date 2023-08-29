@@ -5,7 +5,7 @@
 }
 
 <h2>Аутентификация</h2>
-<form asp-action="Login" asp-controller="Home">
+<form asp-action="LoginForAdmin" asp-controller="Home">
     <p>
         <label asp-for="Username">Имя</label><br />
         <input type="text" asp-for="Username" />
@@ -15,7 +15,7 @@
         <input type="password" asp-for="Password" />
     </p>
     <p>
-        <input type="submit" value="Войти как пользователь или суперпользователь" />
+        <input type="submit" value="Войти как админ" />
     </p>
 </form>
 

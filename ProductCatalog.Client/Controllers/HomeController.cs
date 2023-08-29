@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using ProductCatalog.DAL.Entities;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Text;
 
 namespace ProductCatalog.Client.Controllers
@@ -18,14 +19,17 @@ namespace ProductCatalog.Client.Controllers
         }
 
         #region
+
+
         public async Task<IActionResult> Index()
         {
             var product = await GetProducts();
-            if(product is null)
+            if (product is null)
             {
-                return (IActionResult)Results.Content("Access is available");
+                //return (IActionResult)Results.Content("Access is available");
 
             }
+
             return View(product);
         }
 
@@ -38,10 +42,18 @@ namespace ProductCatalog.Client.Controllers
                 return (List<Product>)Results.Content("Access is available");
 
             }
+
             var url = "api/Product/GetProducts";
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-            string jsonStr = await _httpClient.GetStringAsync(url);
 
+            var role = User?.FindFirstValue(accessToken);
+
+            if(role == null)
+            {
+                 url = "api/Product/GetProductsUser";
+
+            }
+            string jsonStr = await _httpClient.GetStringAsync(url);
             var res = JsonConvert.DeserializeObject<List<Product>>(jsonStr)!.ToList();
 
             return res;
@@ -79,19 +91,21 @@ namespace ProductCatalog.Client.Controllers
         public async Task<IActionResult> Login(UserDto user)
         {
             StringContent stringContent = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+           
             using (var response = await _httpClient.PostAsync("api/Auth/Login", stringContent))
             {
                 string token = await response.Content.ReadAsStringAsync();
 
-                if (token == "Wrong password")
+                if (token == "Wrong token")
                 {
                     ViewBag.Message = "Incorrect UserId or Password";
                     return Redirect("~/Home/Login");
                 }
                 HttpContext.Session.SetString("JWT", token);
             }
-            return Redirect("~/Home/Index");
 
+        
+            return Redirect("~/Home/Index");
         }
 
         public IActionResult Logout()
@@ -102,6 +116,7 @@ namespace ProductCatalog.Client.Controllers
 
         #endregion
 
+        #region
         [HttpGet]
         public IActionResult CreateProducts()
         {
@@ -172,7 +187,7 @@ namespace ProductCatalog.Client.Controllers
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             string data = JsonConvert.SerializeObject(product);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage httpResponseMessage = _httpClient.PutAsync(_httpClient.BaseAddress + "/product/EditProducts", content).Result;
+            HttpResponseMessage httpResponseMessage = _httpClient.PutAsync(_httpClient.BaseAddress + "/Product/EditProducts", content).Result;
 
             if(httpResponseMessage.IsSuccessStatusCode)
             {
@@ -222,9 +237,18 @@ namespace ProductCatalog.Client.Controllers
             return View();
         }
 
+        #endregion
+
         [HttpGet]
         public IActionResult CreateCategory()
         {
+            var accessToken = HttpContext.Session.GetString("JWT");
+            if (accessToken == null)
+            {
+                return (IActionResult)Results.Content("Access is available");
+
+            }
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             return View();
         }
 
@@ -252,8 +276,6 @@ namespace ProductCatalog.Client.Controllers
         [HttpGet]
         public IActionResult EditCategory(int id)
         {
-            try
-            {
                 var accessToken = HttpContext.Session.GetString("JWT");
                 if (accessToken == null)
                 {
@@ -272,13 +294,7 @@ namespace ProductCatalog.Client.Controllers
                 return View(category);
 
             }
-            catch (Exception ex)
-            {
-                TempData[""] = ex.Message;
-                return View();
-            }
-
-        }
+        
 
         [HttpPost]
         public IActionResult EditCategory(Category category)
@@ -330,6 +346,197 @@ namespace ProductCatalog.Client.Controllers
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction(nameof(Index));
+            }
+            return View();
+        }
+
+        public async Task<IActionResult> Panel()
+        {
+            var user = await GetUsers();
+            if (user is null)
+            {
+                return (IActionResult)Results.Content("Access is available");
+
+            }
+            return View(user);
+        }
+
+        [HttpGet]
+        public async Task<List<User>> GetUsers()
+        {
+            var accessToken = HttpContext.Session.GetString("JWT");
+            if (accessToken == null)
+            {
+                return (List<User>)Results.Content("Access is available");
+
+            }
+
+            var url = "api/User/GetUsers";
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            string jsonStr = await _httpClient.GetStringAsync(url);
+
+            var res = JsonConvert.DeserializeObject<List<User>>(jsonStr)!.ToList();
+
+            return res;
+        }
+
+        [HttpGet]
+        public IActionResult LoginForAdmin()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> LoginForAdmin(UserDto user)
+        {
+            StringContent stringContent = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+
+            using (var response = await _httpClient.PostAsync("api/Auth/Login", stringContent))
+            {
+                string token = await response.Content.ReadAsStringAsync();
+
+                if (token == "Wrong token")
+                {
+                    ViewBag.Message = "Incorrect UserId or Password";
+                    return Redirect("~/Home/Login");
+                }
+                HttpContext.Session.SetString("JWT", token);
+            }
+
+
+            return Redirect("~/Home/Panel");
+        }
+
+        [HttpGet]
+        public IActionResult CreateUser()
+        {
+            var accessToken = HttpContext.Session.GetString("JWT");
+            if (accessToken == null)
+            {
+                return (IActionResult)Results.Content("Access is available");
+
+            }
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateUser(User user)
+        {
+            var accessToken = HttpContext.Session.GetString("JWT");
+            if (accessToken == null)
+            {
+                return (IActionResult)Results.Content("Access is available");
+
+            }
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+            string data = JsonConvert.SerializeObject(user);
+            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+            HttpResponseMessage responseMessage = _httpClient.PostAsync(_httpClient.BaseAddress + "/User/AddUser", content).Result;
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Panel));
+            }
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult BlockedUser()
+        {
+            var accessToken = HttpContext.Session.GetString("JWT");
+            if (accessToken == null)
+            {
+                return (IActionResult)Results.Content("Access is available");
+
+            }
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            return View();
+        }
+
+
+        [HttpPost, ActionName("BlockedUser")]
+        public IActionResult BlockedUserConfirmed(int id, User user)
+        {
+            var accessToken = HttpContext.Session.GetString("JWT");
+            if (accessToken == null)
+            {
+                return (IActionResult)Results.Content("Access is available");
+
+            }
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            string data = JsonConvert.SerializeObject(user);
+            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+            HttpResponseMessage responseMessage = _httpClient.PutAsync(_httpClient.BaseAddress + "/User/BlockedUser/" + id, content).Result;
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Panel));
+            }
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult DeleteUser()
+        {
+            var accessToken = HttpContext.Session.GetString("JWT");
+            if (accessToken == null)
+            {
+                return (IActionResult)Results.Content("Access is available");
+
+            }
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            return View();
+        }
+
+        [HttpPost, ActionName("DeleteUser")]
+        public IActionResult DeleteConfirmedUser(int id)
+        {
+            var accessToken = HttpContext.Session.GetString("JWT");
+            if (accessToken == null)
+            {
+                return (IActionResult)Results.Content("Access is available");
+
+            }
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+            HttpResponseMessage responseMessage = _httpClient.DeleteAsync(_httpClient.BaseAddress + "/User/DeleteUser/" + id).Result;
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Panel));
+            }
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult EditPasswordUser()
+        {
+            var accessToken = HttpContext.Session.GetString("JWT");
+            if (accessToken == null)
+            {
+                return (IActionResult)Results.Content("Access is available");
+
+            }
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            return View();
+        }
+
+
+        [HttpPost, ActionName("EditPasswordUser")]
+        public IActionResult EditPassUserConfirmed(User user)
+        {
+            var accessToken = HttpContext.Session.GetString("JWT");
+            if (accessToken == null)
+            {
+                return (IActionResult)Results.Content("Access is available");
+
+            }
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            string data = JsonConvert.SerializeObject(user);
+            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+            HttpResponseMessage responseMessage = _httpClient.PutAsync(_httpClient.BaseAddress + "/User/EditPassUser", content).Result;
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Panel));
             }
             return View();
         }

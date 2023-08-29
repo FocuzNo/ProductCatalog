@@ -1,0 +1,32 @@
+﻿@model ProductCatalog.DAL.Entities.User
+
+<h2>Добавление пользователя</h2>
+<hr />
+<form asp-action="CreateUser">
+    <label asp-for="Id">Id</label>
+    <input asp-for="Id" />
+    <br />
+    <label asp-for="Username">Username</label>
+    <input asp-for="Username" />
+    <br />
+    <label asp-for="PasswordHash">PasswordHash</label>
+    <input asp-for="PasswordHash" />
+    <br />
+    <label asp-for="RefreshToken">RefreshToken</label>
+    <input asp-for="RefreshToken" />
+    <br />
+    <label asp-for="TokenCreated">TokenCreated</label>
+    <input asp-for="TokenCreated" />
+    <br />
+    <label asp-for="TokenExpires">TokenExpires</label>
+    <input asp-for="TokenExpires" />
+    <br />
+    <label asp-for="Blocked">Blocked</label>
+    <input asp-for="Blocked" />
+    <br />
+    <label asp-for="Role">Role</label>
+    <input asp-for="Role" />
+
+    <input type="submit" value="Create" />
+    <a asp-action="Index">Back to List</a>
+</form>
