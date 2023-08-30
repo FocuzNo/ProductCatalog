@@ -3,11 +3,17 @@
 @{
     ViewData["Title"] = "DeleteCategory";
 }
-<form asp-action="DeleteCategory">
+
+@TempData["successMessage"]
+@TempData["errorMessage"]
+<hr />
+<form asp-action="DeleteCategory" class="form-auth">
     <label asp-for="Id">Id</label>
+    <br />
     <input asp-for="Id" />
     <br />
 
-    <input type="submit" value="Delete" />
-    <a asp-action="Index">Back to List</a>
+    <input type="submit" value="Удалить пользователя" />
+    <br />
+    <a asp-action="Index">Назад</a>
 </form>

@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace ProductCatalog.DAL.Migrations
 {
     /// <inheritdoc />
@@ -82,6 +84,27 @@ namespace ProductCatalog.DAL.Migrations
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "Id", "CategoryName" },
+                values: new object[,]
+                {
+                    { 1, "Еда" },
+                    { 2, "Вкусности" },
+                    { 3, "Вода" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "CategoryId", "GeneralNote", "Price", "ProductDescription", "ProductName", "SpecialNote" },
+                values: new object[,]
+                {
+                    { 1, 1, "Акция", 10.000m, "Селедка соленая", "Селедка", "Пересоленая" },
+                    { 2, 1, "Вкусная", 20.000m, "Тушенка говяжая", "Тушенка", "Жилы" },
+                    { 3, 2, "С ключом", 30.000m, "В банках", "Сгущенка", "Вкусная" },
+                    { 4, 3, "Вятский", 15.000m, "В бутылках", "Квас", "Теплый" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",

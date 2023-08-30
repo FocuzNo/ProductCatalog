@@ -1,11 +1,14 @@
 ﻿@model ProductCatalog.DAL.Entities.UserDto
 
 @{
-    ViewData["Title"] = "Authentication";
+    ViewData["Title"] = "Аутентификация для пользователя";
 }
 
-<h2>Аутентификация</h2>
-<form asp-action="LoginForUser" asp-controller="Home">
+@TempData["successMessage"]
+@TempData["errorMessage"]
+<hr />
+<form asp-action="LoginForUser" asp-controller="Home" class="form-auth">
+    <h2>Аутентификация для пользователя</h2>
     <p>
         <label asp-for="Username">Имя</label><br />
         <input type="text" asp-for="Username" />
@@ -15,7 +18,7 @@
         <input type="password" asp-for="Password" />
     </p>
     <p>
-        <input type="submit" value="Войти как пользователь" />
+        <input type="submit" value="Войти" />
     </p>
 </form>
 

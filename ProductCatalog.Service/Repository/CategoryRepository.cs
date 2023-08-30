@@ -26,6 +26,7 @@ namespace ProductCatalog.Service.Repository
             {
                 categories.CategoryName = category.CategoryName;
                 _dataContext.Categories.Update(categories);
+
                 await _dataContext.SaveChangesAsync();
             }
         }

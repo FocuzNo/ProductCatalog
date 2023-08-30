@@ -1,9 +1,12 @@
 ﻿@model ProductCatalog.DAL.Entities.Product
 
-<h2>Добавление продукта</h2>
+@TempData["successMessage"]
+@TempData["errorMessage"]
 <hr />
-<form asp-action="CreateProductsForUser">
+<form asp-action="CreateProductsForUser" class="form-auth">
+    <h2>Добавление продукта</h2>
     <label asp-for="Id">Id</label>
+    <br />
     <input asp-for="Id" />
     <br />
     <label asp-for="ProductName">ProductName</label>
@@ -19,8 +22,10 @@
     <input asp-for="GeneralNote" />
     <br />
     <label asp-for="CategoryId">CategoryId</label>
+    <br />
     <input asp-for="CategoryId" />
-
-    <input type="submit" value="Create" />
+    <br />
+    <input type="submit" value="Добавить продукт" />
+    <br />
     <a asp-action="Index">Back to List</a>
 </form>

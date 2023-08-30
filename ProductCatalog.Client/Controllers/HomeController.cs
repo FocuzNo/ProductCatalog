@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ProductCatalog.DAL.Entities;
 using System.Net.Http.Headers;
-using System.Security.Claims;
 using System.Text;
 
 namespace ProductCatalog.Client.Controllers
@@ -20,9 +17,7 @@ namespace ProductCatalog.Client.Controllers
             _httpClient.BaseAddress = baseAddress;
         }
 
-        #region
-
-
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var product = await GetProducts();
@@ -33,6 +28,35 @@ namespace ProductCatalog.Client.Controllers
 
             return View(product);
         }
+
+        [HttpGet("Search")]
+        public async Task <IActionResult> Index(string searchBy, string name)
+        {
+            if(searchBy is null || name is null)
+            {
+                var products = await GetProducts();
+                return View(products);
+
+            }
+            var accessToken = HttpContext.Session.GetString("JWT");
+            if (accessToken is null)
+            {
+                return (IActionResult)Results.Content("Access is available");
+
+            }
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+            List<Product> product = new List<Product>();
+            HttpResponseMessage responseMessage = _httpClient.GetAsync(_httpClient.BaseAddress + "/Product/SearchByProduct/" + searchBy + "/" + name).Result;
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                string data = responseMessage.Content.ReadAsStringAsync().Result;
+                product = JsonConvert.DeserializeObject<List<Product>>(data)!;
+            }
+
+            return View(product);
+        }
+      
 
         [HttpGet]
         public async Task<List<Product>> GetProducts()
@@ -60,7 +84,7 @@ namespace ProductCatalog.Client.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register(User user)
+        public IActionResult Register(UserDto user)
         {
             string data = JsonConvert.SerializeObject(user);
             StringContent content = new StringContent(data, Encoding.UTF8,
@@ -70,9 +94,12 @@ namespace ProductCatalog.Client.Controllers
 
             if(response.IsSuccessStatusCode)
             {
-                TempData["successMessage"] = "New user";
-                return RedirectToAction("/Login");
+                TempData["successMessage"] = "Успешная авторизация. Вы добавили нового пользователя. Переходите к аутентификации";
+                return View();
             }
+
+            TempData["errorMessage"] = "Неверные данные, либо пустые поля. Попробуйте еще раз.";
+
             return View();
         }
 
@@ -90,15 +117,11 @@ namespace ProductCatalog.Client.Controllers
             {
                 string token = await response.Content.ReadAsStringAsync();
 
-                if (token == "Wrong token")
-                {
-                    ViewBag.Message = "Incorrect UserId or Password";
-                    return Redirect("~/Home/Login");
-                }
                 HttpContext.Session.SetString("JWT", token);
             }
 
-        
+            TempData["successMessage"] = "Успешная аутентификация.";
+
             return Redirect("~/Home/Index");
         }
 
@@ -108,9 +131,6 @@ namespace ProductCatalog.Client.Controllers
             return Redirect("~/Home/Login");
         }
 
-        #endregion
-
-        #region
         [HttpGet]
         public IActionResult CreateProducts()
         {
@@ -127,14 +147,17 @@ namespace ProductCatalog.Client.Controllers
 
             }
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-            
+
             string data = JsonConvert.SerializeObject(product);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage responseMessage = _httpClient.PostAsync(_httpClient.BaseAddress + "/Product/AddProducts", content).Result;
             if (responseMessage.IsSuccessStatusCode)
             {
+                TempData["successMessage"] = "Продукты успешно добавлены.";
                 return RedirectToAction(nameof(Index));
             }
+
+            TempData["errorMessage"] = "Что-то пошло не так. Возможно не выбран Id категории.";
             return View();
 
         }
@@ -158,15 +181,15 @@ namespace ProductCatalog.Client.Controllers
                     string data = responseMessage.Content.ReadAsStringAsync().Result;
                     product = JsonConvert.DeserializeObject<Product>(data)!;
                 }
+
                 return View(product);
 
-    }
+            }
             catch (Exception ex)
             {
                 TempData[""] = ex.Message;
                 return View();
             }
-            
         }
 
         [HttpPost]
@@ -183,10 +206,13 @@ namespace ProductCatalog.Client.Controllers
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage httpResponseMessage = _httpClient.PutAsync(_httpClient.BaseAddress + "/Product/EditProducts", content).Result;
 
-            if(httpResponseMessage.IsSuccessStatusCode)
+            if (httpResponseMessage.IsSuccessStatusCode)
             {
+                TempData["successMessage"] = "Продукты успешно отредактированы.";
                 return RedirectToAction(nameof(Index));
             }
+
+            TempData["errorMessage"] = "Что-то пошло не так. Возможно не написан Id продукта.";
             return View();
         }
 
@@ -203,7 +229,7 @@ namespace ProductCatalog.Client.Controllers
             Product product = new Product();
             HttpResponseMessage responseMessage = _httpClient.GetAsync(_httpClient.BaseAddress + "/Product/GetProductById/" + id).Result;
 
-            if(responseMessage.IsSuccessStatusCode)
+            if (responseMessage.IsSuccessStatusCode)
             {
                 string data = responseMessage.Content.ReadAsStringAsync().Result;
                 product = JsonConvert.DeserializeObject<Product>(data)!;
@@ -224,14 +250,16 @@ namespace ProductCatalog.Client.Controllers
 
             HttpResponseMessage responseMessage = _httpClient.DeleteAsync(_httpClient.BaseAddress + "/Product/DeleteProducts/" + id).Result;
 
-            if(responseMessage.IsSuccessStatusCode)
+            if (responseMessage.IsSuccessStatusCode)
             {
+                TempData["successMessage"] = "Продукт успешно удален.";
                 return RedirectToAction(nameof(Index));
             }
+
+            TempData["errorMessage"] = "Что-то пошло не так. Возможно не написан Id продукта.";
             return View();
         }
 
-        #endregion
 
         [HttpGet]
         public IActionResult CreateCategory()
@@ -262,34 +290,36 @@ namespace ProductCatalog.Client.Controllers
             HttpResponseMessage responseMessage = _httpClient.PostAsync(_httpClient.BaseAddress + "/Category/AddCategory", content).Result;
             if (responseMessage.IsSuccessStatusCode)
             {
+                TempData["successMessage"] = "Категория успешно добавлены.";
                 return RedirectToAction(nameof(Index));
             }
+
+            TempData["errorMessage"] = "Категория не была создана. Попробуйте еще раз.";
             return View();
         }
 
         [HttpGet]
         public IActionResult EditCategory(int id)
         {
-                var accessToken = HttpContext.Session.GetString("JWT");
-                if (accessToken == null)
-                {
-                    return (IActionResult)Results.Content("Access is available");
-
-                }
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
-                Category category = new Category();
-                HttpResponseMessage responseMessage = _httpClient.GetAsync(_httpClient.BaseAddress + "/Product/GetCategoryById/" + id).Result;
-                if (responseMessage.IsSuccessStatusCode)
-                {
-                    string data = responseMessage.Content.ReadAsStringAsync().Result;
-                    category = JsonConvert.DeserializeObject<Category>(data)!;
-                }
-                return View(category);
+            var accessToken = HttpContext.Session.GetString("JWT");
+            if (accessToken == null)
+            {
+                return (IActionResult)Results.Content("Access is available");
 
             }
-        
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
+            Category category = new Category();
+            HttpResponseMessage responseMessage = _httpClient.GetAsync(_httpClient.BaseAddress + "/Product/GetCategoryById/" + id).Result;
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                string data = responseMessage.Content.ReadAsStringAsync().Result;
+                category = JsonConvert.DeserializeObject<Category>(data)!;
+            }
+            return View(category);
+
+        }
+        
         [HttpPost]
         public IActionResult EditCategory(Category category)
         {
@@ -306,8 +336,11 @@ namespace ProductCatalog.Client.Controllers
 
             if (httpResponseMessage.IsSuccessStatusCode)
             {
+                TempData["successMessage"] = "Категория успешно отредактирована.";
                 return RedirectToAction(nameof(Index));
             }
+
+            TempData["errorMessage"] = "Что-то пошло не так. Возможно не указали Id.";
             return View();
         }
 
@@ -320,6 +353,7 @@ namespace ProductCatalog.Client.Controllers
                 return (IActionResult)Results.Content("Access is available");
 
             }
+
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             return View();
         }
@@ -339,8 +373,11 @@ namespace ProductCatalog.Client.Controllers
 
             if (responseMessage.IsSuccessStatusCode)
             {
+                TempData["successMessage"] = "Категория успешно удалена.";
                 return RedirectToAction(nameof(Index));
             }
+
+            TempData["errorMessage"] = "Что-то пошло не так. Возможно не указали Id.";
             return View();
         }
 
@@ -352,6 +389,7 @@ namespace ProductCatalog.Client.Controllers
                 return (IActionResult)Results.Content("Access is available");
 
             }
+
             return View(user);
         }
 
@@ -387,16 +425,10 @@ namespace ProductCatalog.Client.Controllers
             using (var response = await _httpClient.PostAsync("api/Auth/Login", stringContent))
             {
                 string token = await response.Content.ReadAsStringAsync();
-
-                if (token == "Wrong token")
-                {
-                    ViewBag.Message = "Incorrect UserId or Password";
-                    return Redirect("~/Home/Login");
-                }
                 HttpContext.Session.SetString("JWT", token);
             }
 
-
+            TempData["successMessage"] = "Успешная аутентификация.";
             return Redirect("~/Home/Panel");
         }
 
@@ -409,6 +441,7 @@ namespace ProductCatalog.Client.Controllers
                 return (IActionResult)Results.Content("Access is available");
 
             }
+
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             return View();
         }
@@ -429,8 +462,11 @@ namespace ProductCatalog.Client.Controllers
             HttpResponseMessage responseMessage = _httpClient.PostAsync(_httpClient.BaseAddress + "/User/AddUser", content).Result;
             if (responseMessage.IsSuccessStatusCode)
             {
+                TempData["successMessage"] = "Успешно добавлен пользователь.";
                 return RedirectToAction(nameof(Panel));
             }
+
+            TempData["errorMessage"] = "Что-то пошло не так. Возможно не указан логин или пароль.";
             return View();
         }
 
@@ -443,6 +479,7 @@ namespace ProductCatalog.Client.Controllers
                 return (IActionResult)Results.Content("Access is available");
 
             }
+
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             return View();
         }
@@ -457,14 +494,18 @@ namespace ProductCatalog.Client.Controllers
                 return (IActionResult)Results.Content("Access is available");
 
             }
+
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             string data = JsonConvert.SerializeObject(user);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage responseMessage = _httpClient.PutAsync(_httpClient.BaseAddress + "/User/BlockedUser/" + id, content).Result;
             if (responseMessage.IsSuccessStatusCode)
             {
+                TempData["successMessage"] = "Успешно пользователь заблокирован.";
                 return RedirectToAction(nameof(Panel));
             }
+
+            TempData["errorMessage"] = "Что-то пошло не так. Возможно не указан Id пользователя.";
             return View();
         }
 
@@ -477,6 +518,7 @@ namespace ProductCatalog.Client.Controllers
                 return (IActionResult)Results.Content("Access is available");
 
             }
+
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             return View();
         }
@@ -496,8 +538,11 @@ namespace ProductCatalog.Client.Controllers
 
             if (responseMessage.IsSuccessStatusCode)
             {
+                TempData["successMessage"] = "Успешно пользователь удален.";
                 return RedirectToAction(nameof(Panel));
             }
+
+            TempData["errorMessage"] = "Что-то пошло не так. Возможно не указан Id пользователя.";
             return View();
         }
 
@@ -510,6 +555,7 @@ namespace ProductCatalog.Client.Controllers
                 return (IActionResult)Results.Content("Access is available");
 
             }
+
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             return View();
         }
@@ -530,11 +576,13 @@ namespace ProductCatalog.Client.Controllers
             HttpResponseMessage responseMessage = _httpClient.PutAsync(_httpClient.BaseAddress + "/User/EditPassUser", content).Result;
             if (responseMessage.IsSuccessStatusCode)
             {
+                TempData["successMessage"] = "Успешно пароль пользователя отредактирован.";
                 return RedirectToAction(nameof(Panel));
             }
+
+            TempData["errorMessage"] = "Что-то пошло не так. Возможно не указано имя пользователя.";
             return View();
         }
-
 
         public async Task<IActionResult> TableForUser()
         {
@@ -580,15 +628,10 @@ namespace ProductCatalog.Client.Controllers
             {
                 string token = await response.Content.ReadAsStringAsync();
 
-                if (token == "Wrong token")
-                {
-                    ViewBag.Message = "Incorrect UserId or Password";
-                    return Redirect("~/Home/LoginForUser");
-                }
                 HttpContext.Session.SetString("JWT", token);
             }
 
-
+            TempData["successMessage"] = "Успешная аутентификация.";
             return Redirect("~/Home/TableForUser");
         }
 
@@ -613,10 +656,12 @@ namespace ProductCatalog.Client.Controllers
             HttpResponseMessage responseMessage = _httpClient.PostAsync(_httpClient.BaseAddress + "/Product/AddProducts", content).Result;
             if (responseMessage.IsSuccessStatusCode)
             {
+                TempData["successMessage"] = "Успешно добавлен продукт.";
                 return RedirectToAction(nameof(TableForUser));
             }
-            return View();
 
+            TempData["successMessage"] = "Что-то пошло не так.";
+            return View();
         }
 
         [HttpGet]
@@ -646,7 +691,6 @@ namespace ProductCatalog.Client.Controllers
                 TempData[""] = ex.Message;
                 return View();
             }
-
         }
 
         [HttpPost]
@@ -665,8 +709,11 @@ namespace ProductCatalog.Client.Controllers
 
             if (httpResponseMessage.IsSuccessStatusCode)
             {
+                TempData["successMessage"] = "Успешно изменен продукт.";
                 return RedirectToAction(nameof(TableForUser));
             }
+
+            TempData["errorMessage"] = "Что-то пошло не так. Возможно не указан Id продукта.";
             return View();
         }
     }

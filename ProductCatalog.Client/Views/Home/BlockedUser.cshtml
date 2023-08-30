@@ -1,13 +1,19 @@
 ﻿@model ProductCatalog.DAL.Entities.User
 
 @{
-    ViewData["Title"] = "BlockedUser";
+    ViewData["Title"] = "Заблокировать пользователя";
 }
-<form asp-action="BlockedUser">
+
+@TempData["successMessage"]
+@TempData["errorMessage"]
+<hr />
+<form asp-action="BlockedUser" class="form-auth">
     <label asp-for="Id">Id</label>
+    <br/>
     <input asp-for="Id" />
     <br />
 
-    <input type="submit" value="Blocked" />
-    <a asp-action="Panel">Back to List</a>
+    <input type="submit" value="Заблокировать" />
+    <br />
+    <a asp-action="Panel">Назад</a>
 </form>

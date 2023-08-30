@@ -4,26 +4,27 @@
     ViewData["Title"] = "Table";
 }
 
-<a asp-action="CreateProducts">Create Products</a>
-<a asp-action="CreateCategory">Create Category</a>
-<a asp-action="EditCategory">Edit Category</a>
-<a asp-action="DeleteCategory">Delete Category</a>
+@TempData["successMessage"]
+@TempData["errorMessage"]
 
+<br/>
+<a asp-action="CreateProducts">Добавить продукт</a>
+<a asp-action="CreateCategory">Добавить категорию</a>
+<a asp-action="EditCategory">Изменить категорию</a>
+<a asp-action="DeleteCategory">Удалить категорию</a>
 
-<div>
-    <form asp-controller="Home" asp-action="Index" method="get">
-        <p>
-            Title: <input type="text" name="SearchString" />
-            <input type="submit" value="Filter" />
-        </p>
-    </form>
-    }
-</div>
+@using (Html.BeginForm("Index", "Home", FormMethod.Get))
+{
+    <span>Введите поле по которому поиск:</span>
+    <input type="text" name="searchBy" placeholder="ProductName"/>
+    <span>Введиет то, что хотите найти:</span>
+    <input type="text" name="name" placeholder="Lays"/>
+    <input type="submit" value="Search" name="submit"/>
+}
+
 <table class="table">
-
     <thead>
         <tr>
-
             <th>
                 @Html.DisplayNameFor(model => model.Id)
             </th>
@@ -50,8 +51,6 @@
     <tbody>
         @foreach(var item in Model)
         {
-            var model = new ProductCatalog.DAL.Entities.Category();
-
             <tr>
                 <td>
                     @Html.DisplayFor(i => item.Id)

@@ -1,9 +1,13 @@
 ﻿@model ProductCatalog.DAL.Entities.Product
 
 @{
-    ViewData["Title"] = "DeleteProduct";
+    ViewData["Title"] = "Удалить продукт";
 }
-<form asp-action="DeleteProduct">
+
+@TempData["successMessage"]
+@TempData["errorMessage"]
+<hr />
+<form asp-action="DeleteProduct" class="form-auth">
 <table class="table">
     <thead>
         <tr>
@@ -28,6 +32,6 @@
         </tr>
     </thead>
     </table>
-        <input type="submit" value="Delete" />
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Удалить продукт" />
+        <a asp-action="Index">Назад</a>
     </form>

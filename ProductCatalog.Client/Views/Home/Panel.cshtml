@@ -4,16 +4,18 @@
     ViewData["Title"] = "Table";
 }
 
-<a asp-action="CreateUser">Create User</a>
-<a asp-action="BlockedUser">Blocked User</a>
-<a asp-action="EditPasswordUser">EditPasswordUser</a>
+@TempData["successMessage"]
+@TempData["errorMessage"]
+<hr />
 
+<a asp-action="CreateUser">Добавить пользователя</a>
+<a asp-action="BlockedUser">Заблокировать пользователя</a>
+<a asp-action="EditPasswordUser">Изменить пароль пользователя</a>
 
 <table class="table">
 
     <thead>
         <tr>
-
             <th>
                 @Html.DisplayNameFor(model => model.Id)
             </th>
