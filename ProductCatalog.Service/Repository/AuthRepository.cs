@@ -31,6 +31,7 @@ namespace ProductCatalog.Service.Repository
             user.Username = userDto.Username;
             user.PasswordHash = passworHash;
             user.Role = userDto.Role;
+           
             await _dataContext.AddAsync(user);
             _dataContext.SaveChanges();
         }
@@ -41,7 +42,6 @@ namespace ProductCatalog.Service.Repository
             {
                 new Claim(ClaimTypes.Name, user.Username!),
                 new Claim(ClaimTypes.Role, user.Role),
-
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(

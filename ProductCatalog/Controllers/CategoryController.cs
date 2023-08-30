@@ -20,6 +20,11 @@ namespace ProductCatalog.Controllers
         public async Task<ActionResult> AddCategory(Category newCategory)
         {
             await _categoryRepository.AddCategory(newCategory);
+            if(string.IsNullOrWhiteSpace(newCategory.CategoryName))
+            {
+                return BadRequest("The category name field is empty.");
+            }
+
             return Ok(newCategory);
         }
 
@@ -27,6 +32,11 @@ namespace ProductCatalog.Controllers
         public async Task<ActionResult> EditCategory(Category category)
         {
             await _categoryRepository.EditCategory(category);
+            if (string.IsNullOrWhiteSpace(category.CategoryName))
+            {
+                return BadRequest("The category name field is empty.");
+            }
+
             return Ok(category);
         }
 

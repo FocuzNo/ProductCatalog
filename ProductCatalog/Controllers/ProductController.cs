@@ -8,7 +8,7 @@ namespace ProductCatalog.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductController : Controller
+    public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
         private readonly DataContext _dataContext;
@@ -61,7 +61,7 @@ namespace ProductCatalog.Controllers
             return Ok(product);
         }
 
-        [HttpGet("SearchByProduct")]
+        [HttpGet("SearchByProduct/{searchBy}/{name}"), Authorize(Roles = "SuperUser, User")]
         public async Task<ActionResult> SearchByProduct(string? searchBy, string? name)
         {
            var productSearch = await _productRepository.SearchByProduct(searchBy, name);

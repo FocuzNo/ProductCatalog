@@ -1,20 +1,23 @@
-﻿@model ProductCatalog.DAL.Entities.User
+﻿@model ProductCatalog.DAL.Entities.UserDto
 
 @{
-    ViewData["Title"] = "Authorization";
+    ViewData["Title"] = "Авторизация";
 }
+@TempData["successMessage"]
+@TempData["errorMessage"]
+<hr />
 
+    <form asp-action="Register" asp-controller="Home" class="form-auth">
     <h2>Авторизация</h2>
-    <form asp-action="Register" asp-controller="Home">
         <p>
-            <label asp-for="Username">Имя</label><br />
+            <label asp-for="Username">Имя пользователя</label><br />
             <input type="text" asp-for="Username" />
         </p>
         <p>
-            <label asp-for="PasswordHash">Пароль</label><br />
-            <input type="password" asp-for="PasswordHash" />
+            <label asp-for="Password">Пароль</label><br />
+            <input type="password" asp-for="Password" />
         </p>
         <p>
-            <input type="submit" value="Отправить" />
+            <input type="submit" value="Авторизация" />
         </p>
     </form>

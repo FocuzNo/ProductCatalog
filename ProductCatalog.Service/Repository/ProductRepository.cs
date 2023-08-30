@@ -22,7 +22,7 @@ namespace ProductCatalog.Service.Repository
         public async Task EditProduct(Product product)
         {
             var products = _dataContext.Products.FirstOrDefault(q => q.Id == product.Id);
-            if (products != null)
+            if (products is not null)
             {
                 products.ProductName = product.ProductName;
                 products.ProductDescription = product.ProductDescription;
@@ -38,7 +38,7 @@ namespace ProductCatalog.Service.Repository
         public async Task DeleteProduct(int? id)
         {
             var products = _dataContext.Products.FirstOrDefault(i => i.Id == id);
-            if (products != null)
+            if (products is not null)
             {
                 _dataContext.Products.Remove(products);
                 await _dataContext.SaveChangesAsync();
@@ -74,7 +74,6 @@ namespace ProductCatalog.Service.Repository
 
         public async Task<IEnumerable<Product>> SearchByProduct(string? searchBy, string? name)
         {
-           
             IQueryable<Product> searchByName = _dataContext.Products;
             if (searchBy!.ToLower() == "id")
             {
@@ -92,7 +91,7 @@ namespace ProductCatalog.Service.Repository
             {
                 searchByName = _dataContext.Products.Where(p => p.ProductDescription.ToLower().Contains(name!.ToLower()));
             }
-            else if (searchBy!.ToLower() == "specialnot")
+            else if (searchBy!.ToLower() == "specialnote")
             {
                 searchByName = _dataContext.Products.Where(p => p.SpecialNote.ToLower().Contains(name!.ToLower()));
             }
@@ -100,7 +99,7 @@ namespace ProductCatalog.Service.Repository
             {
                 searchByName = _dataContext.Products.Where(p => p.Price == decimal.Parse(name!));
             }
-            else if (searchBy!.ToLower() == "generalnot")
+            else if (searchBy!.ToLower() == "generalnote")
             {
                 searchByName = _dataContext.Products.Where(p => p.GeneralNote.ToLower().Contains(name!.ToLower()));
             }

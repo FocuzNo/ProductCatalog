@@ -1,25 +1,35 @@
 ﻿@model ProductCatalog.DAL.Entities.Product
 
-<h2>Редактирование продукта</h2>
+@TempData["successMessage"]
+@TempData["errorMessage"]
 <hr />
 <form asp-action="EditProductForUser">
+    <h2>Редактирование продукта</h2>
     <label asp-for="Id">Id</label>
+    <br />
     <input asp-for="Id" />
     <br />
     <label asp-for="ProductName">ProductName</label>
+    <br />
     <input asp-for="ProductName" />
     <br />
     <label asp-for="ProductDescription">ProductDescription</label>
+    <br />
     <input asp-for="ProductDescription" />
     <br />
     <label asp-for="Price">Price</label>
+    <br />
     <input asp-for="Price" />
     <br />
     <label asp-for="GeneralNote">GeneralNote</label>
+    <br />
     <input asp-for="GeneralNote" />
     <br />
     <label asp-for="CategoryId">CategoryId</label>
+    <br />
     <input asp-for="CategoryId" />
-    <input type="submit" value="Edit" />
-    <a asp-action="Index">Back to List</a>
+    <br />
+    <input type="submit" value="Изменить продукт" />
+    <br />
+    <a asp-action="Index">Назад</a>
 </form>

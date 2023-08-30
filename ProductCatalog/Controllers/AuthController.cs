@@ -35,7 +35,12 @@ namespace ProductCatalog.Controllers
                 }
             }
 
+            if (string.IsNullOrWhiteSpace(userDto.Username) || string.IsNullOrWhiteSpace(userDto.Password))
+            {
+                return BadRequest("Incorrect data. Put fields or incorrect username or password.");
+            }
             await _authRepository.RegisterAccount(userDto);
+
             return Ok(userDto);
         }
 
@@ -47,8 +52,8 @@ namespace ProductCatalog.Controllers
             if(user?.Blocked is true)
             {
                 return BadRequest("You are blocked.");
-
             }
+
             if (user is null)
             {
                 return BadRequest("Wrong username.");
@@ -67,7 +72,7 @@ namespace ProductCatalog.Controllers
             return Ok(token);
         }
 
-        [HttpPost("RefreshToken"), Authorize]
+        [HttpPost("RefreshToken"), Authorize (Roles = "Admin, SuperUser, User")]
         public ActionResult<string> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
@@ -103,12 +108,13 @@ namespace ProductCatalog.Controllers
             user.TokenExpires = newRefreshToken.Expires;
         }
 
-        [HttpGet, Authorize(Roles = "SuperAdmin")]
+        [HttpGet, Authorize(Roles = "Admin")]
         public ActionResult<object> GetRoles()
         {
             var userName = User?.Identity?.Name;
             var userName2 = User?.FindFirstValue(ClaimTypes.Name);
             var role = User?.FindFirstValue(ClaimTypes.Role);
+
             return Ok(new { userName, userName2, role });
         }
     }

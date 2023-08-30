@@ -1,15 +1,20 @@
 ﻿@model ProductCatalog.DAL.Entities.Category
 
-<h2>Добавление категории</h2>
+@TempData["successMessage"]
+@TempData["errorMessage"]
 <hr />
-<form asp-action="CreateCategory">
+<form asp-action="CreateCategory" class="form-auth">
+    <h2>Добавление категории</h2>
+    <br/>
     <label asp-for="Id">Id</label>
+    <br />
     <input asp-for="Id" />
     <br />
     <label asp-for="CategoryName">CategoryName</label>
+    <br />
     <input asp-for="CategoryName" />
+    <br />
 
-
-    <input type="submit" value="Create" />
-    <a asp-action="Index">Back to List</a>
+    <input type="submit" value="Создать категорию" />
+    <a asp-action="Index">Назад</a>
 </form>

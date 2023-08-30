@@ -1,14 +1,20 @@
 ﻿@model ProductCatalog.DAL.Entities.Category
 
-<h2>Редактирование категории</h2>
+@TempData["successMessage"]
+@TempData["errorMessage"]
 <hr />
-<form asp-action="EditCategory">
+<form asp-action="EditCategory" class="form-auth">
+    <h2>Редактирование категории</h2>
+    <br />
     <label asp-for="Id">Id</label>
+    <br />
     <input asp-for="Id" />
     <br />
     <label asp-for="CategoryName">CategoryName</label>
+    <br />
     <input asp-for="CategoryName" />
-
-    <input type="submit" value="Edit" />
-    <a asp-action="Index">Back to List</a>
+    <br />
+    <input type="submit" value="Изменить категорию" />
+    <br />
+    <a asp-action="Index">Назад</a>
 </form>

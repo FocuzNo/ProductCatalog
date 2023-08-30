@@ -11,7 +11,7 @@ using ProductCatalog.DAL;
 namespace ProductCatalog.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230829130313_Initial")]
+    [Migration("20230830105742_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -35,6 +35,23 @@ namespace ProductCatalog.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryName = "Еда"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CategoryName = "Вкусности"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryName = "Вода"
+                        });
                 });
 
             modelBuilder.Entity("ProductCatalog.DAL.Entities.Product", b =>
@@ -71,6 +88,48 @@ namespace ProductCatalog.DAL.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryId = 1,
+                            GeneralNote = "Акция",
+                            Price = 10.000m,
+                            ProductDescription = "Селедка соленая",
+                            ProductName = "Селедка",
+                            SpecialNote = "Пересоленая"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CategoryId = 1,
+                            GeneralNote = "Вкусная",
+                            Price = 20.000m,
+                            ProductDescription = "Тушенка говяжая",
+                            ProductName = "Тушенка",
+                            SpecialNote = "Жилы"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryId = 2,
+                            GeneralNote = "С ключом",
+                            Price = 30.000m,
+                            ProductDescription = "В банках",
+                            ProductName = "Сгущенка",
+                            SpecialNote = "Вкусная"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CategoryId = 3,
+                            GeneralNote = "Вятский",
+                            Price = 15.000m,
+                            ProductDescription = "В бутылках",
+                            ProductName = "Квас",
+                            SpecialNote = "Теплый"
+                        });
                 });
 
             modelBuilder.Entity("ProductCatalog.DAL.Entities.User", b =>

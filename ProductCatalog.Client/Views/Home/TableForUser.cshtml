@@ -4,7 +4,12 @@
     ViewData["Title"] = "Table";
 }
 
-<a asp-action="CreateProductsForUser">Create Products</a>
+
+@TempData["successMessage"]
+@TempData["errorMessage"]
+<hr />
+
+<a asp-action="CreateProductsForUser">Добавить продукт</a>
 
 <table class="table">
     <thead>
